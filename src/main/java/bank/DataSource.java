@@ -52,7 +52,7 @@ public class DataSource {
     try(Connection connection = connect(); PreparedStatement statement = connection.prepareStatement(sql)) {
       statement.setInt(1, accountId);
       try(ResultSet resultSet = statement.executeQuery()) {
-        account = new Account(resultSet.getInt("id"), resultSet.getDouble("balance"), resultSet.getString("type"))
+        account = new Account(resultSet.getInt("id"), resultSet.getDouble("balance"), resultSet.getString("type"));
       }
       catch(SQLException e) {
         e.printStackTrace();
