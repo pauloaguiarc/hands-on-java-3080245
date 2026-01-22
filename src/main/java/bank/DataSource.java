@@ -27,19 +27,17 @@ public class DataSource {
   public static Customer getCustomer(String username) {
     String sql = "SELECT * FROM customers WHERE username = ?";
     Customer customer = null;
-    try(Connection connection = connect(); PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (Connection connection = connect(); PreparedStatement statement = connection.prepareStatement(sql)) {
       statement.setString(1, username);
-      try(ResultSet resultSet = statement.executeQuery()) {
+      try (ResultSet resultSet = statement.executeQuery()) {
         customer = new Customer(
-          resultSet.getInt("id"),
-          resultSet.getString("name"),
-          resultSet.getString("username"),
-          resultSet.getString("password"),
-          resultSet.getInt("account_id")
-        );
+            resultSet.getInt("id"),
+            resultSet.getString("name"),
+            resultSet.getString("username"),
+            resultSet.getString("password"),
+            resultSet.getInt("account_id"));
       }
-    }
-    catch(SQLException e) {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
 
@@ -49,20 +47,31 @@ public class DataSource {
   public static Account getAccount(int accountId) {
     String sql = "SELECT * FROM Accounts WHERE accountId = ?";
     Account account = null;
-    try(Connection connection = connect(); PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (Connection connection = connect(); PreparedStatement statement = connection.prepareStatement(sql)) {
       statement.setInt(1, accountId);
-      try(ResultSet resultSet = statement.executeQuery()) {
+      try (ResultSet resultSet = statement.executeQuery()) {
         account = new Account(resultSet.getInt("id"), resultSet.getDouble("balance"), resultSet.getString("type"));
-      }
-      catch(SQLException e) {
+      } catch (SQLException e) {
         e.printStackTrace();
       }
-    }
-    catch(SQLException e) {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
 
     return account;
+  }
+
+  public static void updateAccountBalance(int accountId, double balance) {
+    String sql = "UPDATE accounts SET balance = ? WHERE id = ?";
+    try {
+      Connection connection = connect();
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setDouble(1, balance);
+      statement.setInt(2, accountId);
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
 }
